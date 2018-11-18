@@ -1,4 +1,8 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -7,7 +11,7 @@ public class Task_56 {
 	public static void main(String[] args) {
 		final String outputPath = "OUTPUT.TXT";
 		final ListOfFriends test = new ListOfFriends();
-		try(final BufferedWriter output = new BufferedWriter(new FileWriter(outputPath))) {
+		try(final BufferedWriter output = Files.newBufferedWriter(Paths.get(outputPath))) {
 			output.write(test.toString());
 		}catch (IOException e) {
 			e.printStackTrace();
@@ -27,7 +31,7 @@ public class Task_56 {
 		this.friends = new ArrayList<>();
 		this.mutualFriends = new ArrayList<>();
 		this.alsoFriend = new ArrayList<>();
-		try(final BufferedReader input = new BufferedReader (new FileReader(path))) {
+		try(final BufferedReader input = Files.newBufferedReader(Paths.get(path))) {
 			//-----------------------------------------------------------------------------
 			if(input.ready()) {
 				//-----------------------------------------------------------------------------
