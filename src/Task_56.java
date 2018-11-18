@@ -1,78 +1,80 @@
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
 public class Task_56 {
 	public static void main(String[] args) {
-		ListOfFriends test = new ListOfFriends();
-		try(final Formatter output = new Formatter("OUTPUT.TXT")) {
-			output.format(test.toString());
-		}catch (FileNotFoundException | FormatterClosedException e) {
+		final String outputPath = "OUTPUT.TXT";
+		final ListOfFriends test = new ListOfFriends();
+		try(final BufferedWriter output = new BufferedWriter(new FileWriter(outputPath))) {
+			output.write(test.toString());
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+/*public*/ class ListOfFriends {
+	//-----------------------------------------------------------------------------fields
+	private ArrayList<String> friends;
+	private ArrayList<String> mutualFriends;
+	private ArrayList<String> alsoFriend;
+	//-----------------------------------------------------------------------------constructors
+	/*public*/ private ListOfFriends(final String path)
+	{
+		this.friends = new ArrayList<>();
+		this.mutualFriends = new ArrayList<>();
+		this.alsoFriend = new ArrayList<>();
+		try(final BufferedReader input = new BufferedReader (new FileReader(path))) {
+			//-----------------------------------------------------------------------------
+			if(input.ready()) {
+				//-----------------------------------------------------------------------------
+				int numbersOfFriends = Integer.valueOf(input.readLine()); //read data from file
+				//-----------------------------------------------------------------------------
+				for(int friend = 0; friend < numbersOfFriends; friend++) {
+					this.friends.add(input.readLine()); //read data from file
+				}
+				Collections.sort(this.friends);
+				//-----------------------------------------------------------------------------
+				numbersOfFriends = Integer.valueOf(input.readLine()); //read data from file
+				//-----------------------------------------------------------------------------
+				for(int friend = 0; friend < numbersOfFriends; friend++) {
+					String possibleFriend = input.readLine(); //read data from file
+					if(this.friends.contains(possibleFriend)) {
+						this.mutualFriends.add(possibleFriend);
+					}
+					else {
+						this.alsoFriend.add(possibleFriend);
+					}
+				}
+				Collections.sort(this.mutualFriends);
+				Collections.sort(this.alsoFriend);
+				//-----------------------------------------------------------------------------
+			}
+			//-----------------------------------------------------------------------------
+			else {
+				throw new IOException("File is empty!");
+			}
+			//-----------------------------------------------------------------------------
+		}catch (IOException | NoSuchElementException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/*public*/ static class ListOfFriends {
-		private ArrayList<String> friends;
-		private ArrayList<String> mutualFriends;
-		private ArrayList<String> alsoFriend;
-		//-----------------------------------------------------------------------------
-		public ListOfFriends(String path)
-		{
-			this.friends = new ArrayList<>();
-			this.mutualFriends = new ArrayList<>();
-			this.alsoFriend = new ArrayList<>();
-			try(final Scanner input = new Scanner(Paths.get(path))) {
-				//-----------------------------------------------------------------------------
-				if(input.hasNext()) {
-					//-----------------------------------------------------------------------------
-					int numbersOfFriends = Integer.valueOf(input.nextLine()); //read data from file
-					//-----------------------------------------------------------------------------
-					for(int friend = 0; friend < numbersOfFriends; friend++) {
-						this.friends.add(input.nextLine()); //read data from file
-					}
-					Collections.sort(this.friends);
-					//-----------------------------------------------------------------------------
-					numbersOfFriends = Integer.valueOf(input.nextLine()); //read data from file
-					//-----------------------------------------------------------------------------
-					for(int friend = 0; friend < numbersOfFriends; friend++) {
-						String possibleFriend = input.nextLine(); //read data from file
-						if(this.friends.contains(possibleFriend)) {
-							this.mutualFriends.add(possibleFriend);
-						}
-						else {
-							this.alsoFriend.add(possibleFriend);
-						}
-					}
-					Collections.sort(this.mutualFriends);
-					Collections.sort(this.alsoFriend);
-				}
-				//-----------------------------------------------------------------------------
-				else {
-					throw new IOException("File is empty!");
-				}
-				//-----------------------------------------------------------------------------
-			}catch (IOException | NoSuchElementException e) {
-				e.printStackTrace();
-			}
-		}
-
-		public ListOfFriends()
-		{
-			this("INPUT.TXT");
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.format("Friends: %s%nMutual Friends: %s%nAlso Friend of: %s",
-					String.join(", ", this.friends),
-					String.join(", ", this.mutualFriends),
-					String.join(", ", this.alsoFriend));
-		}
+	/*public*/ ListOfFriends()
+	{
+		this("INPUT.TXT");
 	}
-
+	//-----------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------methods
+	@Override
+	public String toString()
+	{
+		return String.format("Friends: %s%nMutual Friends: %s%nAlso Friend of: %s",
+				String.join(", ", this.friends),
+				String.join(", ", this.mutualFriends),
+				String.join(", ", this.alsoFriend));
+	}
 }
-
-
